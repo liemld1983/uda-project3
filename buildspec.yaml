@@ -1,0 +1,27 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_ACCOUNT_ID: "589850093396"
+    AWS_DEFAULT_REGION: "us-east-1"
+
+phases:
+  pre_build:
+    commands:
+      # Configuring Docker to authenticate with Amazon ECR
+      - echo "Authenticating Docker with Amazon ECR"
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+  build:
+    commands:
+      # Building the Docker image for the coworking analytics application
+      - echo "Starting the Docker build process for the coworking analytics application"
+      - docker build -t coworking-analytics analytics/
+
+      # Assigning a unique tag to the Docker image
+      - echo "Assigning a unique tag to the Docker image"
+      - docker tag coworking-analytics:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/coworking-analytics:$CODEBUILD_BUILD_NUMBER
+  post_build:
+    commands:
+      # Uploading the Docker image to Amazon ECR
+      - echo "Uploading the Docker image to Amazon ECR"
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/coworking-analytics-app:$CODEBUILD_BUILD_NUMBER
