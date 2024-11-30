@@ -19,7 +19,7 @@ phases:
 
       # Assigning a unique tag to the Docker image
       - echo "Assigning a unique tag to the Docker image"
-      - docker tag coworking-analytics:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/coworking-analytics:$CODEBUILD_BUILD_NUMBER
+      - docker tag coworking-analytics:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/coworking-analytics-app:$CODEBUILD_BUILD_NUMBER
   post_build:
     commands:
       # Uploading the Docker image to Amazon ECR
